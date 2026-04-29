@@ -1,5 +1,7 @@
 # AutoPenAI
 
+----- this repo only contains the frontend portion of the project to which i contributed the most in -----
+
 AI-assisted automated penetration testing platform.
 
 ## About
