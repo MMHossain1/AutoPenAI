@@ -1,0 +1,76 @@
+# GitLab CI/CD Pipeline for AutoPenAI
+# This pipeline builds and tests both frontend and backend
+
+stages:
+  - lint
+  - test
+  - build
+
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "dev" || $CI_COMMIT_BRANCH == "main"'
+
+# Backend Jobs
+.backend-base:
+  image: python:3.11-slim
+  tags:
+    - docker
+  before_script:
+    - cd backend
+    - python -m pip install --no-cache-dir -r requirements-test.txt
+  cache:
+    key: backend-pip
+    paths:
+      - backend/.pip-cache/
+
+backend-lint:
+  extends: .backend-base
+  stage: lint
+  script:
+    - flake8 app/ --max-line-length=120 --exclude=__pycache__
+
+backend-test:
+  extends: .backend-base
+  services:
+    - name: postgres:18.2
+      alias: db
+      variables:
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: testpassword
+        POSTGRES_DB: sweng-11
+  stage: test
+  variables:
+    DATABASE_URL: "postgresql://postgres:testpassword@db:5432/sweng-11"
+  script:
+    - pytest --cov=app --cov-report=term
+  coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
+
+# Frontend Jobs
+.frontend-base:
+  image: node:22
+  tags:
+    - docker
+  before_script:
+    - cd frontend
+    - npm ci
+  cache:
+    key: frontend-npm
+    paths:
+      - frontend/node_modules/
+
+frontend-lint:
+  extends: .frontend-base
+  stage: lint
+  script:
+    - npm run lint
+
+frontend-build:
+  extends: .frontend-base
+  stage: build
+  script:
+    - npm run build
+  artifacts:
+    paths:
+      - frontend/dist/
+    expire_in: 1 week

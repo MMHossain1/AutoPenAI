@@ -1,0 +1,95 @@
+services:
+  db:
+    image: postgres:16
+    container_name: autopenai-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-testpassword}
+      POSTGRES_DB: ${POSTGRES_DB:-sweng-11}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  zap:
+    image: ghcr.io/zaproxy/zaproxy:stable
+    container_name: autopenai-zap
+    restart: unless-stopped
+    command: >
+      zap.sh -daemon -host 0.0.0.0 -port 8080 -config api.disablekey=true -config api.addrs.addr.name=.* -config api.addrs.addr.regex=true
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/JSON/core/view/version/" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  ollama:
+    # CPU-only (default):
+    image: ollama/ollama:latest
+    # AMD GPU via ROCm — uncomment the line below and comment out the line above:
+    # image: ollama/ollama:rocm
+    container_name: autopenai-ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    # AMD GPU via ROCm — uncomment the devices section below when using ollama:rocm
+    # devices:
+    #   - /dev/kfd
+    #   - /dev/dri
+    # NVIDIA GPU — uncomment the deploy section below instead
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+
+  backend:
+    build: ./backend
+    container_name: autopenai-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-testpassword}@db:5432/${POSTGRES_DB:-sweng-11}
+      ZAP_BASE_URL: http://zap:8080
+      ZAP_API_KEY: ""
+      OLLAMA_BASE_URL: http://ollama:11434
+      LLM_PROFILE: ${LLM_PROFILE:-fast}
+      CORS_ORIGINS: http://localhost:3000,http://localhost:3001
+    depends_on:
+      db:
+        condition: service_healthy
+      zap:
+        condition: service_healthy
+      ollama:
+        condition: service_started
+
+  frontend:
+    build: ./frontend
+    container_name: autopenai-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      BACKEND_URL: http://backend:8000
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+  ollama_data:

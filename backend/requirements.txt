@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+requests
+zaproxy
+psycopg2-binary
+SQLAlchemy
+PyJWT
+pwdlib[argon2]
+python-multipart
+python-dotenv
+codecarbon

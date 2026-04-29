@@ -1,0 +1,181 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.glass-effect {
+  background: rgb(var(--card) / 0.90);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgb(var(--border) / 0.25);
+}
+
+.glass-card {
+  background: rgb(var(--card) / 0.65);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgb(var(--border) / 0.25);
+}
+
+.hero-gradient {
+  background: radial-gradient(circle at 50% 50%, rgb(var(--navy) / 0.15) 0%, transparent 70%);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --background-light: 246 246 248;
+  --foreground-light: 15 17 26;
+
+  --card-light: 255 255 255;
+  --card-foreground-light: 15 17 26;
+
+  --navy-light: 19 91 236;
+  --navy-foreground-light: 255 255 255;
+
+  --secondary-light: 242 242 245;
+  --secondary-foreground-light: 30 41 59;
+
+  --muted-light: 241 245 249;
+  --muted-foreground-light: 100 116 139;
+
+  --accent-light: 219 234 254;
+  --accent-foreground-light: 29 78 216;
+
+  --border-light: 226 232 240;
+  --input-light: 226 232 240;
+  --ring-light: 19 91 236;
+
+  --background-dark: 11 18 32;
+  --foreground-dark: 229 231 235;
+
+  --card-dark: 17 24 39;
+  --card-foreground-dark: 229 231 235;
+
+  --navy-dark: 59 130 246;
+  --navy-foreground-dark: 255 255 255;
+
+  --secondary-dark: 31 41 55;
+  --secondary-foreground-dark: 229 231 235;
+
+  --muted-dark: 31 41 55;
+  --muted-foreground-dark: 156 163 175;
+
+  --accent-dark: 96 165 250;
+  --accent-foreground-dark: 255 255 255;
+
+  --border-dark: 55 65 81;
+  --input-dark: 55 65 81;
+  --ring-dark: 96 165 250;
+
+  --accent-cyan: 0 245 255;
+  --accent-purple: 184 119 255;
+  --accent-green: 34 197 94;
+
+  --background: var(--background-light);
+  --foreground: var(--foreground-light);
+  --card: var(--card-light);
+  --card-foreground: var(--card-foreground-light);
+  --navy: var(--navy-light);
+  --navy-foreground: var(--navy-foreground-light);
+  --secondary: var(--secondary-light);
+  --secondary-foreground: var(--secondary-foreground-light);
+  --muted: var(--muted-light);
+  --muted-foreground: var(--muted-foreground-light);
+  --accent: var(--accent-light);
+  --accent-foreground: var(--accent-foreground-light);
+  --border: var(--border-light);
+  --input: var(--input-light);
+  --ring: var(--ring-light);
+
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: rgb(var(--foreground));
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html.dark {
+  --background: var(--background-dark);
+  --foreground: var(--foreground-dark);
+  --card: var(--card-dark);
+  --card-foreground: var(--card-foreground-dark);
+  --navy: var(--navy-dark);
+  --navy-foreground: var(--navy-foreground-dark);
+  --secondary: var(--secondary-dark);
+  --secondary-foreground: var(--secondary-foreground-dark);
+  --muted: var(--muted-dark);
+  --muted-foreground: var(--muted-foreground-dark);
+  --accent: var(--accent-dark);
+  --accent-foreground: var(--accent-foreground-dark);
+  --border: var(--border-dark);
+  --input: var(--input-dark);
+  --ring: var(--ring-dark);
+}
+
+html.dark[data-theme="navy"] {
+  --background: 11 18 32;
+  --foreground: 229 231 235;
+  --card: 25 35 65;
+  --card-foreground: 229 231 235;
+  --navy: 96 165 250;
+  --navy-foreground: 11 18 32;
+  --secondary: 59 130 246;
+  --secondary-foreground: 255 255 255;
+  --muted: 37 99 235;
+  --muted-foreground: 191 219 254;
+  --accent: 147 197 253;
+  --accent-foreground: 11 18 32;
+  --border: 59 130 246;
+  --input: 37 99 235;
+  --ring: 147 197 253;
+}
+
+html {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-color: rgb(var(--background));
+  color: rgb(var(--foreground));
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: transparent;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+
+button:hover {
+  border-color: #646cff;
+}
+
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
